@@ -1,7 +1,7 @@
 import React, { useState}from 'react'
 
 import Card from '../../shared/components/UIElements/Card'
-import Button from '../../shared/components/FromElement/Button'
+import Button from '../../shared/components/FormElements/Button'
 import Modal from '../../shared/components/UIElements/Modal'
 import Map from '../../shared/components/UIElements/Map'
 
@@ -27,19 +27,19 @@ const PlaceItem = (props) => {
                     <Map canter ={props.coordinates} zoom ={16}/>
                 </div>
             </Modal>
-        <li className='place_item'>
-            <Card className="place_item__content">
+        <li className='place-item'>
+            <Card className="place-item__content">
             <div className='place-item__image'>
                <img src = {props.image} alt={props.title} />
             </div>
-            <div className='place_item__info'>
+            <div className='place-item__info'>
                 <h2>{props.title}</h2>
                 <h3>{props.address}</h3>
                 <p>{props.description}</p>
             </div>
-            <div className='place_item__actions'>
+            <div className='place-item__actions'>
                 <Button inverse onClick={openshowMapHandler}>VIEW ON MAP</Button>
-                <Button to = {`/place/${props.id}`}>EDIT</Button>
+                <Button to = {`/places/${props.id}`}>EDIT</Button>
                 <Button danger>DELETE PLACE</Button>
             </div>
             </Card>

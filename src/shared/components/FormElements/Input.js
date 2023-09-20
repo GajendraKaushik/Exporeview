@@ -28,9 +28,9 @@ const inputReducer = (state,action) =>{
 const Input = (props) =>{ 
     // in useReducer we apss the Reducer methos and initioal state of the component 
     const [inputState, dispatch] = useReducer(inputReducer,{
-        value:'',
+        value: props.initialValue || '',
         isTouched:false,    // here we are passing the  initial state of the componente 
-        isvalid:false
+        isValid:props.initialValid || false
     });
 
     const {id, onInput} = props; // here we are destructuring the props 
