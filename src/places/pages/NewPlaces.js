@@ -37,7 +37,7 @@ const NewPlaces = (props) => {
          id ="title"
          element ="input" 
          type="text" 
-         lable="Title"  
+         label="Title"  
          validators ={[VALIDATOR_REQUIRE()]} 
          errorText ="Please enter a valid title"  
          onInput = {inputHandler}
@@ -47,7 +47,7 @@ const NewPlaces = (props) => {
           id ="description"
           element ="textarea" 
           type="text" 
-          lable="Description"  
+          label="Description"  
           validators ={[VALIDATOR_MINLENGTH(5)]} 
           errorText ="Please enter a valid description( at least 5 characters ) "  
           onInput = {inputHandler}
@@ -55,7 +55,7 @@ const NewPlaces = (props) => {
         <Input
           id ="address"
           element ="input" 
-          lable="Address"  
+          label="Address"  
           validators ={[VALIDATOR_REQUIRE()]} 
           errorText ="Please enter a valid address"  
           onInput = {inputHandler}
