@@ -18,7 +18,7 @@ export const useHttpClient = () =>{
                 method,
                 body,
                 headers,
-                signal:httpAbortctrl.signal
+                signal: httpAbortctrl.signal
             });
             const responseData = await responce.json();
 
@@ -39,7 +39,7 @@ export const useHttpClient = () =>{
        },[]
         
     );
-
+ 
     const clearError = () => {
         setError(null);
     };
