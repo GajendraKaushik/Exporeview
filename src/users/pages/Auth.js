@@ -9,6 +9,9 @@ import { Authcontext } from '../../shared/context/auth-context';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import { useHttpClient } from '../../shared/hooks/http-hook';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
+
+
 import './Auth.css';
 
 const Auth = () => {
@@ -36,7 +39,8 @@ const Auth = () => {
             setFromData(
                 {
                     ...formState.inputs, // coping the from value 
-                    name:undefined
+                    name:undefined,
+                    image: undefined
                 },
                 formState.inputs.email.isValid && formState.inputs.password.isValid
             )
@@ -45,8 +49,12 @@ const Auth = () => {
                 {
                     ...formState.inputs,
                     name:{
-                        value:'',
-                        isValid:false
+                        value: '',
+                        isValid: false
+                    },
+                    image:{
+                        value: null,
+                        isValid: false
                     }
                 },
                 false
@@ -57,6 +65,7 @@ const Auth = () => {
 
     const authSubmitHandler =  async event =>{
         event.preventDefault();
+        console.log(formState.inputs);
 
         if(isLoginMode){
             try{
@@ -68,7 +77,7 @@ const Auth = () => {
                 }),
                  {
                     'Content-Type' : 'application/json' 
-                },
+                }
             
                 );
 
@@ -77,21 +86,20 @@ const Auth = () => {
 
         }else{
             try{
-              const responseData = await sendRequest('http://localhost:5100/api/users/signup',
+                const formData = new FormData();
+                formData.append('email', formState.inputs.email.value);
+                formData.append('name', formState.inputs.name.value);
+                formData.append('password', formState.inputs.password.value);
+                formData.append('image', formState.inputs.image.value);
+                const responseData = await sendRequest('http://localhost:5100/api/users/signup',
                   'POST',
-                  JSON.stringify({
-                    name: formState.inputs.name.value,
-                    email : formState.inputs.email.value,
-                    password : formState.inputs.password.value
-                }),
-                 {
-                    'Content-Type' : 'application/json' 
-                },
-              )
+                  formData
+                )
+
                 auth.login(responseData.user.id)
             }catch (err){ }
         }
-    }
+    };
 
     return(
         <React.Fragment>
@@ -113,6 +121,9 @@ const Auth = () => {
                     onInput={inputHandler}
                     />
                 )}
+                {!isLoading && (
+                    <ImageUpload center id ="image" onInput ={inputHandler} />
+                )}
                 <Input
                 element ="input"
                 id ="email"
@@ -127,8 +138,8 @@ const Auth = () => {
                 id ="password"
                 type ="password"
                 label="Password"
-                validators ={[VALIDATOR_MINLENGTH(5)]}
-                errorText ="Please enter a valid password, at least 5 charactor."
+                validators ={[VALIDATOR_MINLENGTH(6)]}
+                errorText ="Please enter a valid password, at least 6 charactor."
                 onInput={inputHandler}
                 />
                <Button type ="submit" disabled ={!formState.isValid}>
