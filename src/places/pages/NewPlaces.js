@@ -8,10 +8,11 @@ import {useForm} from '../../shared/hooks/form-hook'
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import { Authcontext } from '../../shared/context/auth-context';
-
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 
 import './PlaceForm.css'
-import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+
 
 const NewPlaces = (props) => {
     const auth = useContext(Authcontext);
@@ -29,6 +30,10 @@ const NewPlaces = (props) => {
             address:{
                 value:'',
                 isValid: false
+            },
+            image: {
+                value: null,
+                isValid: false
             }
     },
     false
@@ -40,18 +45,17 @@ const NewPlaces = (props) => {
     const placeSubmitHandler = async event => {
         event.preventDefault();
         try{
-            console.log("***auth.userId***", auth.userId)
+            const formData = new FormData();
+            formData.append('title', formState.inputs.title.value);
+            formData.append('description', formState.inputs.description.value);
+            formData.append('address', formState.inputs.address.value);
+            formData.append('image', formState.inputs.image.value);
+            formData.append('creator', auth.userId);
+
             await sendRequest('http://localhost:5100/api/places',
             'POST',
-            JSON.stringify({
-                title : formState.inputs.title.value,
-                description : formState.inputs.description.value,
-                address : formState.inputs.address.value,
-                creator : auth.userId
-
-            }),
-            {'Content-Type' : 'application/json'}
-            );
+            formData
+            )
             history.push('/');
         }catch (err){}
        // console.log(formState.inputs); // we will sent this to backend 
@@ -89,6 +93,11 @@ const NewPlaces = (props) => {
           errorText ="Please enter a valid address"  
           onInput = {inputHandler}
         />
+        <ImageUpload
+           id ="image"
+           onInput ={inputHandler}
+           errorText ="Please provide an image."
+           />
         <Button type="submit" disabled = {!formState.isValid}>
             ADD PLACE
         </Button>
