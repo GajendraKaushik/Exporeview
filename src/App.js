@@ -11,22 +11,45 @@ import { Authcontext } from './shared/context/auth-context';
 
 const App = () => {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [token, setToken] = useState(false)
   const [userId, setUserId] = useState(false)
 
-  const login = useCallback(( uid )=>{
+  const login = useCallback((uid, token )=>{
     
-    setIsLoggedIn(true)
+    setToken(token);
     setUserId(uid);
+    const tokenExpirationDate =
+    expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
+  localStorage.setItem(
+    'userData',
+    JSON.stringify({
+      userId: uid,
+      token: token,
+      expiration: tokenExpirationDate.toISOString()
+    })
+  ); 
+
   }, [])
   const logout = useCallback(()=>{
-    setIsLoggedIn(false);
+    setToken(null);
     setUserId(null);
+    localStorage.removeItem('userData');
   }, [])
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('userData'));
+    if (
+      storedData &&
+      storedData.token &&
+      new Date(storedData.expiration) > new Date()
+    ) {
+      login(storedData.userId, storedData.token, new Date(storedData.expiration));
+    }
+  }, [login]);
 
   let routes;
   
-  if (isLoggedIn){
+  if (token){
     routes= (
       <Switch>
         <Route path ="/" exact = {true}>
@@ -66,7 +89,8 @@ const App = () => {
   return (
     <Authcontext.Provider 
     value = {{
-      isLoggedIn: isLoggedIn,
+      isLoggedIn: !! token,
+      token: token,
       userId: userId,
       login:login, 
       logout: logout 
