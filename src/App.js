@@ -9,6 +9,7 @@ import UpdatePlace from './places/pages/UpdatePlace';
 import Auth from './users/pages/Auth';
 import { Authcontext } from './shared/context/auth-context';
 
+let logoutTimer;
 const App = () => {
 
   const [token, setToken] = useState(false)
@@ -35,6 +36,15 @@ const App = () => {
     setUserId(null);
     localStorage.removeItem('userData');
   }, [])
+
+  useEffect(() => {
+    if (token && tokenExpirationDate) {
+      const remainingTime = tokenExpirationDate.getTime() - new Date().getTime();
+      logoutTimer = setTimeout(logout, remainingTime);
+    } else {
+      clearTimeout(logoutTimer);
+    }
+  }, [token, logout, tokenExpirationDate]);
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('userData'));
